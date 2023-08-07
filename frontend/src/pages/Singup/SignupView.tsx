@@ -1,40 +1,50 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {Link as RouterLink} from "react-router-dom"
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Link as RouterLink } from "react-router-dom";
+import logo from "../../assets/GDG.png";
+import axios from "axios";
+import { useForm, SubmitHandler,FieldValues } from "react-hook-form";
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
+
+
+
+  const onSubmit:SubmitHandler<FieldValues> = async (data) => {
+if(data.password !== data.retypePassword){
+    setError('retypePassword', {
+        type: "manual",
+        message: "Passwords do not match",
+    })
+    return
+}
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5002/api/user/register",
+        {
+          username: data.username,
+          password: data.password,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -44,46 +54,62 @@ export default function SignUp() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          </Avatar>
+          <img src={logo} alt="" />
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <form noValidate onSubmit={handleSubmit(onSubmit)}>
+       
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-          
-              </Grid>
+              <Grid item xs={12} sm={6}></Grid>
+              <Grid item xs={12} sm={6}></Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   id="email"
                   label="Username"
-                  name="username"
-                  autoComplete="text"
+              autoComplete="text"
                   autoFocus
+                  {...register("username", { required: true })}
                 />
+                {errors.username && (
+                  <p className="text-red-400">Username is required</p>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  name="password"
                   label="Password"
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  {...register("password", { required: true })}
                 />
+                {errors.password && (
+                  <p className="text-red-400">Passwords do not match</p>
+                )}
               </Grid>
+
               <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  label="Re-type password"
+                  type="password"
+                  id="retypePassword"
+                  autoComplete="new-password"
+                  {...register('retypePassword', { required: true })}
+                />
+                {errors.retypePassword && (
+                  <p className="text-red-400">Passwords do not match</p>
+                )}
               </Grid>
             </Grid>
             <Button
@@ -101,9 +127,9 @@ export default function SignUp() {
                 </Link>
               </Grid>
             </Grid>
+          </form>
           </Box>
-        </Box>
-
+       
       </Container>
     </ThemeProvider>
   );
