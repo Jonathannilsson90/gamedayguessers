@@ -1,0 +1,38 @@
+name: GameDayGuessers - PR validation
+
+on:
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    build-frontend:
+        name: 'Validate frontend build'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository
+              uses: action/checkout@v3
+              with:
+                node-version: 18.x
+
+            - name: Install dependencies
+              working-directory: frontend
+              run: npm install
+
+            - name: Build frontend
+              working-directory: frontend
+              run: npm run build
+
+    build-backend:
+        name: 'Validate backend build'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v3
+
+            - name: Install dependencies
+              working-directory: backend
+              run: npm install
+
+            - name: Build backend
+              working-directory: backend
+              run: npm run build

@@ -10,8 +10,11 @@ import logo from "../../assets/GDG.png";
 import axios from "axios";
 
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 
 export default function SignIn() {
+  const [loginError, setLoginError] = useState("")
+  
   const {
     register,
     handleSubmit,
@@ -22,17 +25,15 @@ const navigate = useNavigate();
 
   const onSubmit:SubmitHandler<FieldValues> = async (data) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axios.post("http://localhost:5002/api/user/token", {
         username: data.username,
         password: data.password,
       });
-      console.log(response)
       navigate(`/mypage/${data.username}`)
     } catch (error) {
-      console.log(error);
+   setLoginError("Incorrect login information.")
     }
-
-    console.log("Button pressed!");
   };
 
   return (
@@ -49,6 +50,7 @@ const navigate = useNavigate();
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {loginError && <p className="text-red-400 text-2xl">{loginError}</p>}
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -60,7 +62,7 @@ const navigate = useNavigate();
             autoFocus
             {...register("username", { required: true })}
           />
-          {errors.username && <p>Username is required</p>}
+          {errors.username && <p className="text-red-400">Username is required</p>}
           <TextField
             margin="normal"
             required
@@ -71,7 +73,7 @@ const navigate = useNavigate();
             autoComplete="current-password"
             {...register("password", { required: true })}
           />
-          {errors.password && <p>Username is required</p>}
+          {errors.password && <p className="text-red-400">Username is required</p>}
           <Button
             type="submit"
             fullWidth
