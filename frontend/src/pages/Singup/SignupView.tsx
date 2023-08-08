@@ -7,10 +7,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink,  } from "react-router-dom";
 import logo from "../../assets/GDG.png";
 import axios from "axios";
 import { useForm, SubmitHandler,FieldValues } from "react-hook-form";
+import { useState } from "react";
 
 const defaultTheme = createTheme();
 
@@ -22,7 +23,7 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
 
-
+const [successMessage, setSuccessMessage] = useState("")
 
   const onSubmit:SubmitHandler<FieldValues> = async (data) => {
 if(data.password !== data.retypePassword){
@@ -42,6 +43,8 @@ if(data.password !== data.retypePassword){
         }
       );
       console.log(response);
+      setSuccessMessage("Registration successful!")
+   
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +66,7 @@ if(data.password !== data.retypePassword){
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+                {successMessage &&<p className="text-green-400 text-xl">{successMessage}</p>}
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
        
             <Grid container spacing={2}>
@@ -93,7 +97,7 @@ if(data.password !== data.retypePassword){
                   {...register("password", { required: true })}
                 />
                 {errors.password && (
-                  <p className="text-red-400">Passwords do not match</p>
+                  <p className="text-red-400">Password is required</p>
                 )}
               </Grid>
 
@@ -112,14 +116,26 @@ if(data.password !== data.retypePassword){
                 )}
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+            {successMessage ? (
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                component={RouterLink}
+                to="/" // Link to login page
+              >
+                Go Back to Login
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign Up
+              </Button>
+            )}
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link component={RouterLink} to="/" variant="body2">

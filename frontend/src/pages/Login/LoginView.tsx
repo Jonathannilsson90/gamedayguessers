@@ -5,12 +5,32 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/GDG.png";
+import axios from "axios";
+
+import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+const navigate = useNavigate();
+
+  const onSubmit:SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:5002/api/user/token", {
+        username: data.username,
+        password: data.password,
+      });
+      console.log(response)
+      navigate(`/mypage/${data.username}`)
+    } catch (error) {
+      console.log(error);
+    }
 
     console.log("Button pressed!");
   };
@@ -29,28 +49,29 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
             label="Username"
-            name="Username"
             autoComplete="text"
             autoFocus
+            {...register("username", { required: true })}
           />
+          {errors.username && <p>Username is required</p>}
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
+            {...register("password", { required: true })}
           />
-
+          {errors.password && <p>Username is required</p>}
           <Button
             type="submit"
             fullWidth
