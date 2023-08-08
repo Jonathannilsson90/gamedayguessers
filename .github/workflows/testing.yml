@@ -2,8 +2,10 @@ name: GameDayGuessers - PR validation
 
 on:
     pull_request:
-        branches: ["main"]
-
+      branches: ["main"]
+    push:
+      branches:
+        - main
 jobs:
     build-frontend:
         name: 'Validate frontend build'
