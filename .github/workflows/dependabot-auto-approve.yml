@@ -15,7 +15,7 @@ jobs:
         with:
           github-token: "${{ secrets.MY_SECRET_VARIABLE }}"
       - name: Approve a PR
-        run: gh pr review --approve "$PR_URL"
+        run: gh pr review --approve "https://github.com/Jonathannilsson90/GamedayGuessers"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.MY_SECRET_VARIABLE}}
