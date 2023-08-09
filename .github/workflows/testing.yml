@@ -37,3 +37,25 @@ jobs:
       - name: Build backend
         working-directory: backend
         run: npm run build
+
+        
+  auto-merge-dependabot:
+    name: Auto merge Dependabot PR
+    timeout-minutes: 10
+    needs:
+      - build-frontend
+      - build-backend
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Merge PR from Dependabot
+        uses: fastify/github-action-merge-dependabot@3.6.4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
+          merge-method: rebase
