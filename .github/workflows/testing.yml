@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Merge PR from Dependabot
-        uses: fastify/github-action-merge-dependabot@3.6.4
+        uses: fastify/github-action-merge-dependabot@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: minor
