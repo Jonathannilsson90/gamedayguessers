@@ -5,7 +5,7 @@ import MyPage from "./pages/MyPage/MyPageView";
 
 function App() {
  
-//test
+//test.
   return (
    <BrowserRouter>
    <Routes>
