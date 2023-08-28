@@ -7,7 +7,7 @@ function App() {
  
 //test.
   return (
-   <BrowserRouter>
+   <BrowserRouter
    <Routes>
   <Route path="/" element={<LoginPage/>}/>
   <Route  path="/signup" element={<SignUp/>}/>
